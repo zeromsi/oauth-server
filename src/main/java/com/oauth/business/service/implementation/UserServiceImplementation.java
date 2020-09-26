@@ -55,12 +55,12 @@ public class UserServiceImplementation implements UserService<UserDto, Integer> 
 				String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?";
 				tempPassword = RandomStringUtils.random(8, characters);
 				userVM.setPassword(tempPassword);
+				boolean res = sendMail("Here's your temporary password:" + tempPassword, "Password Credential",
+						userVM.getEmail());
 			} else {
 				tempPassword = userVM.getPassword();
 			}
-
-			boolean res = sendMail("Here's your temporary password:" + tempPassword, "Password Credential",
-					userVM.getEmail());
+			
 			userVM.setPassword("{bcrypt}"+BCrypt.hashpw(userVM.getPassword(), BCrypt.gensalt(10)));
 			userRepository.save(Converter.getUser(userVM));
 			return true;
