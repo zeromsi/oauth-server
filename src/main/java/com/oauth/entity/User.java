@@ -2,6 +2,7 @@ package com.oauth.entity;
 
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -37,9 +38,12 @@ public class User extends BaseIdEntity implements UserDetails {
 	@Column(name = "credentials_expired")
 	private boolean credentialsNonExpired;
 	
-	
-	@Transient
-	private Set<Role> roles=new HashSet();
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "role_user", joinColumns = {
+			@JoinColumn(name = "user_id", referencedColumnName = "id") }, inverseJoinColumns = {
+					@JoinColumn(name = "role_id", referencedColumnName = "id") })
+	private List<Role> roles;
+
 	
 
 	@Override
@@ -65,25 +69,23 @@ public class User extends BaseIdEntity implements UserDetails {
 	/*
 	 * Get roles and permissions and add them as a Set of GrantedAuthority
 	 */
+	
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		Set<GrantedAuthority> authorities = new HashSet<GrantedAuthority>();
-		//userApplications.forEach(app->{
-			this.getRoles().forEach(r ->{
-				r.setPermissions(null);
-				authorities.add(new SimpleGrantedAuthority(r.getName()));
+
+		roles.forEach(r -> {
+			authorities.add(new SimpleGrantedAuthority(r.getName()));
+			r.getPermissions().forEach(p -> {
+				authorities.add(new SimpleGrantedAuthority(p.getName()));
 			});
-	//	});
+		});
 
 		return authorities;
 	}
 	
 	public Set<Role> getRoles(){
-			this.getRoles().forEach(r ->{
-				Role role=r;
-				roles.add(role);
-			});
-		return roles;
+		return this.getRoles();
 	}
 
 	@Override

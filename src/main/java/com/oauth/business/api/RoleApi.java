@@ -1,5 +1,10 @@
 package com.oauth.business.api;
 
-public interface RoleApi<T,Object> extends CoreApi<T, Object>{
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PostMapping;
+
+public interface RoleApi<T,Object> {
+	@PostMapping("roles")
+	ResponseEntity<?> add(T t);
 	
 }
