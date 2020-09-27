@@ -63,6 +63,11 @@ public class Converter {
 		user.setPassword(userVM.getPassword());
 		user.setName(userVM.getName());
 		user.setUsername(userVM.getUsername());
+		Role role=new Role();
+		role.setId(2); 
+		List<Role> roles=new ArrayList<>();
+		roles.add(role);
+		user.setRoles(roles);
 		return user;
 	}
 

@@ -84,6 +84,10 @@ public class User extends BaseIdEntity implements UserDetails {
 		return authorities;
 	}
 	
+	public void setRoles(List<Role> roles) {
+		this.roles = roles;
+	}
+
 	public Set<Role> getRoles(){
 		return this.getRoles();
 	}

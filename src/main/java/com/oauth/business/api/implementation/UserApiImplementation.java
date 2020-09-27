@@ -27,7 +27,7 @@ public class UserApiImplementation implements UserApi<UserDto, Integer> {
 
 	@Override
 	public ResponseEntity<?> add(@RequestBody UserDto dto) {
-
+		dto.setEnabled(true);
 		boolean checkIfUserExistsAlready = userService.checkUsersExistency(dto.getUsername());
 		boolean checkIfEmailAddressExistsAlready = userService.checkIfEmailAddressExistsAlready(dto.getEmail());
 		if (checkIfUserExistsAlready == true) {

@@ -44,9 +44,6 @@ public class UserServiceImplementation implements UserService<UserDto, Integer> 
 	UserRepository userRepository;
 	
 
-	final String emailAddress = "www.zeromsi2@gmail.com";
-	final String password = "PaglaNewton1*";
-
 	@Override
 	public Boolean save(UserDto userVM) {
 		try {
@@ -55,8 +52,6 @@ public class UserServiceImplementation implements UserService<UserDto, Integer> 
 				String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789~`!@#$%^&*()-_=+[{]}\\|;:\'\",<.>/?";
 				tempPassword = RandomStringUtils.random(8, characters);
 				userVM.setPassword(tempPassword);
-				boolean res = sendMail("Here's your temporary password:" + tempPassword, "Password Credential",
-						userVM.getEmail());
 			} else {
 				tempPassword = userVM.getPassword();
 			}
@@ -70,48 +65,6 @@ public class UserServiceImplementation implements UserService<UserDto, Integer> 
 	}
 
 
-
-	public boolean sendMail(String text, String subject, String email) throws MessagingException, AddressException {
-		Properties prop = new Properties();
-		prop.put("mail.smtp.auth", true);
-		prop.put("mail.smtp.starttls.enable", "true");
-		prop.put("mail.smtp.host", "smtp.gmail.com");
-		prop.put("mail.smtp.port", "587");
-		prop.put("mail.smtp.connectiontimeout", 1000);
-
-		Session session = Session.getInstance(prop, new Authenticator() {
-			@Override
-			protected PasswordAuthentication getPasswordAuthentication() {
-				return new PasswordAuthentication(emailAddress, password);
-			}
-		});
-
-		Message message = new MimeMessage(session);
-		try {
-			message.setFrom(new InternetAddress(emailAddress));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
-			message.setSubject(subject);
-			String msg = text;
-
-			MimeBodyPart mimeBodyPart = new MimeBodyPart();
-			mimeBodyPart.setContent(msg, "text/html");
-
-			Multipart multipart = new MimeMultipart();
-			multipart.addBodyPart(mimeBodyPart);
-
-			message.setContent(multipart);
-
-			Transport.send(message);
-		} catch (NoSuchProviderException ex) {
-			return false;
-		} catch (AuthenticationFailedException ex) {
-			return false;
-		} catch (MessagingException ex) {
-			return false;
-		}
-		return true;
-
-	}
 
 	@Override
 	public boolean checkUsersExistency(String username) {
